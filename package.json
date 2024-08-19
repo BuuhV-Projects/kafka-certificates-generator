@@ -15,7 +15,8 @@
     "changelog:rc": "npm run changelog -- --prerelease rc --skip.changelog --skip.tag",
     "changelog:patch": "npm run changelog -- --release-as patch --prerelease rc",
     "changelog:minor": "npm run changelog -- --release-as minor --prerelease rc",
-    "changelog:major": "npm run changelog -- --release-as major --prerelease rc"
+    "changelog:major": "npm run changelog -- --release-as major --prerelease rc",
+    "prepublish": "yarn build"
   },
   "dependencies": {
     "dotenv": "^16.4.5"
