@@ -1,0 +1,28 @@
+{
+  "name": "kafka-certificates-generator",
+  "version": "1.0.0",
+  "description": "Gerador de certificados do kafka. Usado para configurar auth.",
+  "main": "dist/index.js",
+  "bin": "dist/index.js",
+  "repository": "https://github.com/BuuhV-Projects/kafka-certificates-generator.git",
+  "author": "github@buuhv.com",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "changelog": "standard-version --message \"[skip ci]\"",
+    "changelog:rc": "npm run changelog -- --prerelease rc --skip.changelog --skip.tag",
+    "changelog:patch": "npm run changelog -- --release-as patch --prerelease rc",
+    "changelog:minor": "npm run changelog -- --release-as minor --prerelease rc",
+    "changelog:major": "npm run changelog -- --release-as major --prerelease rc"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.2",
+    "standard-version": "^9.5.0",
+    "typescript": "^5.0.2"
+  }
+}
