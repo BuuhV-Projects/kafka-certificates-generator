@@ -1,40 +1,52 @@
 # Kafka Certificates Generator
 
-O **Kafka Certificates Generator** é uma ferramenta simples e eficiente para gerar certificados SSL de autenticação para clusters Kafka. Com ele, você pode configurar a segurança de suas conexões Kafka utilizando username e password de maneira prática.
+The **Kafka Certificates Generator** is a simple and efficient tool for generating authentication SSL certificates for Kafka clusters. With it, you can configure the security of your Kafka connections using username and password in a practical way.
 
-## Requisitos
+## Requirements
 
-Antes de usar o **Kafka Certificates Generator**, certifique-se de que você possui os seguintes requisitos instalados em sua máquina:
+   Before using the **Kafka Certificates Generator**, make sure you have the following requirements installed on your machine:
 
-- **Java Keytool**: Necessário para a geração dos certificados. O Keytool é geralmente incluído na instalação do JDK (Java Development Kit).
-- **Arquivo `.env`**: O arquivo `.env` deve estar localizado na pasta onde você deseja gerar os certificados. Esse arquivo precisa conter as seguintes variáveis de ambiente:
+   - **Java Keytool**: Required to generate certificates. Keytool is usually included in the JDK (Java Development Kit) installation.
+   - **`.env` file**: The `.env` file must be located in the folder where you want to generate the certificates. This file must contain the following environment variables:
 
-  ```env
-  KAFKA_USERNAME=seu_usuario_kafka
-  KAFKA_PASSWORD=sua_senha_kafka
+   ```env
+   KAFKA_USERNAME=your_kafka_username
+   KAFKA_PASSWORD=your_kafka_password
+   ```
 
-## Como Usar
+## How to Use
 
-1. **Instale o Kafka Certificates Generator**:
+1. **Install Kafka Certificates Generator**:
 
-   Se você ainda não instalou o pacote, faça isso globalmente com o npm:
+   If you haven't installed the package yet, do so globally with npm:
 
    ```bash
    npm install -g kafka-certificates-generator
-    ```
+   ```
 
-2. **Configure o Arquivo `.env`**:
+2. **Configure the `.env` File**:
 
-   Crie um arquivo `.env` na pasta onde deseja gerar os certificados e adicione as seguintes variáveis de ambiente:
+   Create a `.env` file in the folder where you want to generate the certificates and add the following environment variables:
 
    ```env
-   KAFKA_USERNAME=seu_usuario_kafka
-   KAFKA_PASSWORD=sua_senha_kafka
-    ```
-3. **Gere os Certificados**:
+   KAFKA_USERNAME=your_kafka_username
+   KAFKA_PASSWORD=your_kafka_password
+   ```
+3. **Generate the Certificates**:
 
-   Navegue até a pasta onde o arquivo `.env` está localizado e execute o seguinte comando:
+   Navigate to the folder where the `.env` file is located and run the following command:
 
    ```bash
    kafka-certificates-generator
-    ```
+   ```
+4. **Test the certificates**:
+
+   To test the generated certificates, use keytool to view the contents of the `.jks` file:
+
+   ```bash
+   keytool -list -v -keystore keystore/kafka.server.keystore.jks
+   ```
+
+   ```bash
+   keytool -list -v -keystore truststore/kafka.truststore.jks
+   ```

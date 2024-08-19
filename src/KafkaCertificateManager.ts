@@ -14,9 +14,9 @@ export class KafkaCertificateManager {
 
     constructor(
         caDirectory: string, keyStoreDirectory: string, trustStoreDirectory: string, pemDirectory: string,
-        validityInDays: number, password: string, cn: string
+        validityInDays: number, password: string, username: string
     ) {
-        this.ca = new CertificateAuthority(path.join(process.cwd(), caDirectory), validityInDays, cn);
+        this.ca = new CertificateAuthority(path.join(process.cwd(), caDirectory), validityInDays, username);
         this.keyStore = new KeyStore(path.join(process.cwd(), keyStoreDirectory), password, validityInDays);
         this.trustStore = new TrustStore(path.join(process.cwd(), trustStoreDirectory), password);
         this.pemGenerator = new PemGenerator(path.join(process.cwd(), pemDirectory), password);
