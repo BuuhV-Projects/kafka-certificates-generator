@@ -24,5 +24,11 @@
     "@types/node": "^20.4.2",
     "standard-version": "^9.5.0",
     "typescript": "^5.0.2"
-  }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "license",
+    "package.json"
+  ]
 }
