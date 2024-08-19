@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.6](https://github.com/BuuhV-Projects/kafka-certificates-generator/compare/v1.1.5...v1.1.6) (2024-08-19)
+
+
+### Bug Fixes
+
+* Gerador do certificado do client ([7cfe40f](https://github.com/BuuhV-Projects/kafka-certificates-generator/commit/7cfe40f94175837607f131d2d5784ad85c2f624a))
+
 ### [1.1.5](https://github.com/BuuhV-Projects/kafka-certificates-generator/compare/v1.1.4...v1.1.5) (2024-08-19)
 
 ### [1.1.4](https://github.com/BuuhV-Projects/kafka-certificates-generator/compare/v1.1.3...v1.1.4) (2024-08-19)
