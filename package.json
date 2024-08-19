@@ -7,7 +7,7 @@
   "repository": "https://github.com/BuuhV-Projects/kafka-certificates-generator.git",
   "author": "github@buuhv.com",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
