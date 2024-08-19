@@ -23,11 +23,15 @@ export class KafkaCertificateManager {
         this.clientProperties = new ClientProperties();
     }
 
+    private isHostServer(host: string) {
+        return host.startsWith('kafka-');
+    }
+
     public generateCertificates(hosts: string[]) {
         this.ca.generate();
 
         hosts.forEach(host => {
-            const { keyStoreFileName, alias } = this.keyStore.generateKeyStore(host);
+            const { keyStoreFileName, alias } = this.keyStore.generateKeyStore(host, this.isHostServer(host));
             this.pemGenerator.generatePemFiles(keyStoreFileName, alias);
         });
 

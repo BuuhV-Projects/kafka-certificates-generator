@@ -14,7 +14,7 @@ export class ClientProperties {
     constructor() {
         this.properties = {
             'security.protocol': 'SSL',
-            'ssl.keystore.location': `keystore/kafka.server.keystore.jks`,
+            'ssl.keystore.location': `keystore/kafka.client.keystore.jks`,
             'ssl.keystore.password': process.env.KAFKA_PASSWORD || '',
             'ssl.key.password': process.env.KAFKA_PASSWORD || '',
             'ssl.truststore.location': `truststore/kafka.truststore.jks`,
