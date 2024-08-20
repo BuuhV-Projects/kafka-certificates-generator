@@ -4,8 +4,14 @@ services:
   zookeeper:
     image: bitnami/zookeeper:3.7.0
     container_name: zookeeper
+    env_file:
+      - .env
     environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
+      - ZOO_ENABLE_AUTH=yes
+      - ZOO_SERVER_USERS=${KAFKA_USERNAME}
+      - ZOO_SERVER_PASSWORDS=${KAFKA_PASSWORD}
+      - ZOO_CLIENT_USER=${KAFKA_USERNAME}
+      - ZOO_CLIENT_PASSWORD=${KAFKA_PASSWORD}
     ports:
       - "2181:2181"
     networks:
@@ -35,7 +41,6 @@ services:
       - KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN
       - KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username="${KAFKA_USERNAME}" password="${KAFKA_PASSWORD}";
       - KAFKA_OPTS=-Djava.security.auth.login.config=/opt/bitnami/kafka/config/kafka_jaas.conf
-      - KAFKA_CFG_ZOOKEEPER_SASL_ENABLED=false  # Desabilita SASL para ZooKeeper
       - KAFKA_CFG_SECURITY_PROTOCOL=SASL_PLAINTEXT
       - ALLOW_PLAINTEXT_LISTENER=yes  # Allows plaintext communication
     volumes:
