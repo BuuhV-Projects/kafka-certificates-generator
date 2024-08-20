@@ -7,3 +7,4 @@ pem
 truststore
 .env
 client.properties
+certs/*

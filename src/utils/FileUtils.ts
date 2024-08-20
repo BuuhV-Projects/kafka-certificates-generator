@@ -20,7 +20,7 @@ export class FileUtils {
         }
     }
     public static writeFileSync(filePath: string, data: string) {
-        fs.writeFileSync(filePath, data);
+        fs.writeFileSync(filePath, data, 'utf8');
     }
     public static async execAsync(command: string): Promise<string> {
         return new Promise((resolve, reject) => {
