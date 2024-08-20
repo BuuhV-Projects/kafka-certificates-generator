@@ -19,10 +19,12 @@
     "prepublish": "yarn build"
   },
   "dependencies": {
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "shelljs": "^0.8.5"
   },
   "devDependencies": {
     "@types/node": "^20.4.2",
+    "@types/shelljs": "^0.8.15",
     "standard-version": "^9.5.0",
     "typescript": "^5.0.2"
   },

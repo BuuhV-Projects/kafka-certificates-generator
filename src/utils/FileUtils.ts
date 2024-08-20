@@ -1,3 +1,6 @@
+import {
+    exec
+} from 'shelljs';
 import * as fs from 'fs';
 
 export class FileUtils {
@@ -15,5 +18,17 @@ export class FileUtils {
         if (this.exists(filePath)) {
             fs.unlinkSync(filePath);
         }
+    }
+    public static async execAsync(command: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            exec(command, { silent: true }, (code, stdout, stderr) => {
+                if (code === 0) {
+                    resolve(stdout);
+                } else {
+                    console.error('Error executing command', command, stdout);
+                    reject(stderr);
+                }
+            });
+        });
     }
 }

@@ -1,41 +1,70 @@
-import { CertificateAuthority } from './CertificateAuthority';
-import { KeyStore } from './KeyStore';
-import { TrustStore } from './TrustStore';
-import { PemGenerator } from './PemGenerator';
-import { ClientProperties } from './ClientProperties';
-import * as path from 'path';
+import { FileUtils } from "./utils/FileUtils";
 
-export class KafkaCertificateManager {
-    private ca: CertificateAuthority;
-    private keyStore: KeyStore;
-    private trustStore: TrustStore;
-    private pemGenerator: PemGenerator;
-    private clientProperties: ClientProperties;
+class KafkaCertificateManager {
+    private readonly directory = process.cwd();
 
     constructor(
-        caDirectory: string, keyStoreDirectory: string, trustStoreDirectory: string, pemDirectory: string,
-        validityInDays: number, password: string, username: string
-    ) {
-        this.ca = new CertificateAuthority(path.join(process.cwd(), caDirectory), validityInDays, username);
-        this.keyStore = new KeyStore(path.join(process.cwd(), keyStoreDirectory), password, validityInDays);
-        this.trustStore = new TrustStore(path.join(process.cwd(), trustStoreDirectory), password);
-        this.pemGenerator = new PemGenerator(path.join(process.cwd(), pemDirectory), password);
-        this.clientProperties = new ClientProperties();
+        private readonly validityInDays: number,
+        private readonly password: string,
+        private readonly username: string
+    ) { }
+
+    private buildPath = (subDir: string, fileName: string) => {
+        const finalDir = `${this.directory}/${subDir}`;
+        FileUtils.createDirectory(finalDir);
+        return `${finalDir}/${fileName}`;
     }
 
-    private isHostServer(host: string) {
-        return host.startsWith('kafka-');
+    private createOwnPrivateCertificateAuthority = async () => {
+        console.log('1. Create own private Certificate Authority (CA)')
+        await FileUtils.execAsync(`openssl req -new -newkey rsa:4096 -days ${this.validityInDays} -x509 -subj "CN=${this.username}" -keyout ${this.buildPath('certificate-authority', 'ca-key')} -out ${this.buildPath('certificate-authority', 'ca-cert')} -nodes`)
     }
 
-    public generateCertificates(hosts: string[]) {
-        this.ca.generate();
+    private createKafkaServerCertificate = async () => {
+        console.log('2. Create Kafka Server Certificate and store in KeyStore');
+        await FileUtils.execAsync(`keytool -genkey -keystore ${this.buildPath('keystore', 'kafka.server.keystore.jks')} -validity ${this.validityInDays} -storepass ${this.password} -keypass ${this.password} -dname "/CN=${this.username}" -storetype pkcs12`)
+    }
 
-        hosts.forEach(host => {
-            const { keyStoreFileName, alias } = this.keyStore.generateKeyStore(host, this.isHostServer(host));
-            this.pemGenerator.generatePemFiles(keyStoreFileName, alias);
-        });
+    private createCertificateSignedRequest = async () => {
+        console.log('3. Create Certificate signed request (CSR)');
+        await FileUtils.execAsync(`keytool -keystore kafka.server.keystore.jks -certreq -file cert-file -storepass ${this.password} -keypass ${this.password}`)
+    }
 
-        this.trustStore.generateTrustStore(this.ca.getCertFile());
-        this.clientProperties.generateClientProperties();
+    private signCertificateRequest = async () => {
+        console.log('4. Get CSR Signed with the CA');
+        await FileUtils.execAsync(`openssl x509 -req -CA ca-cert -CAkey ca-key -in cert-file -out cert-file-signed -days ${this.validityInDays} -CAcreateserial -passin pass:${this.password}`)
+    }
+
+    private importCertificateInKeyStore = async () => {
+        console.log('5. Import CA certificate in KeyStore');
+        await FileUtils.execAsync(`keytool -keystore kafka.server.keystore.jks -alias CARoot -import -file ca-cert -storepass ${this.password} -keypass ${this.password} -noprompt`)
+    }
+
+    private importSignedCertificateInKeyStore = async () => {
+        console.log('6. Import Signed CSR In KeyStore');
+        await FileUtils.execAsync(`keytool -keystore kafka.server.keystore.jks -import -file cert-file-signed -storepass ${this.password} -keypass ${this.password} -noprompt`)
+    }
+
+    private importCertificateInTrustStore = async () => {
+        console.log('7. Import CA certificate In TrustStore');
+        await FileUtils.execAsync(`keytool -keystore kafka.server.truststore.jks -alias CARoot -import -file ca-cert -storepass ${this.password} -keypass ${this.password} -noprompt`)
+    }
+
+    generateCertificates = async () => {
+        console.log('Generating certificates...');
+        try {
+            await this.createOwnPrivateCertificateAuthority()
+            await this.createKafkaServerCertificate()
+            await this.createCertificateSignedRequest()
+            await this.signCertificateRequest()
+            await this.importCertificateInKeyStore()
+            await this.importSignedCertificateInKeyStore()
+            await this.importCertificateInTrustStore()
+            console.log('Certificates generated successfully');
+        } catch (error) {
+            console.error('Error generating certificates', error);
+            process.exit(1);
+        }
     }
 }
+export default KafkaCertificateManager

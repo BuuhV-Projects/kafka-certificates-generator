@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 
-import { KafkaCertificateManager } from './KafkaCertificateManager';
+import KafkaCertificateManager from './KafkaCertificateManager';
 
 const PASSWORD = process.env.KAFKA_PASSWORD;
 const VALIDITY_IN_DAYS = 3650;
@@ -15,8 +15,7 @@ if (!PASSWORD || !USERNAME) {
 }
 
 const manager = new KafkaCertificateManager(
-    'certificate-authority', 'keystore', 'truststore', 'pem',
     VALIDITY_IN_DAYS, PASSWORD, USERNAME
 );
 
-manager.generateCertificates(HOSTS);
+manager.generateCertificates();
