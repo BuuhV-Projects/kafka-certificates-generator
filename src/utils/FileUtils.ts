@@ -19,6 +19,9 @@ export class FileUtils {
             fs.unlinkSync(filePath);
         }
     }
+    public static writeFileSync(filePath: string, data: string) {
+        fs.writeFileSync(filePath, data);
+    }
     public static async execAsync(command: string): Promise<string> {
         return new Promise((resolve, reject) => {
             exec(command, { silent: true }, (code, stdout, stderr) => {
