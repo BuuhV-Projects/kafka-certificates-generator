@@ -90,7 +90,7 @@ KafkaServer {
   org.apache.kafka.common.security.plain.PlainLoginModule required
   username="${this.username}"
   password="${this.password}"
-  user_admin="${this.password}";
+  user_${this.username}="${this.password}";
 };
 
 Client {
@@ -98,6 +98,13 @@ Client {
   username="${this.username}"
   password="${this.password}";
 };
+
+ZookeeperClient {
+  org.apache.kafka.common.security.plain.PlainLoginModule required
+  username="${this.username}"
+  password="${this.password}";
+};
+
         `.trim();
 
         FileUtils.writeFileSync(`${this.directory}/certs/kafka_server_jaas.conf`, content);

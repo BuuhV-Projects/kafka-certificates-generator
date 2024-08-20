@@ -16,7 +16,8 @@
     "changelog:patch": "npm run changelog -- --release-as patch --prerelease rc",
     "changelog:minor": "npm run changelog -- --release-as minor --prerelease rc",
     "changelog:major": "npm run changelog -- --release-as major --prerelease rc",
-    "prepublish": "yarn build"
+    "prepublish": "yarn build",
+    "test": "node dist/kafka.example.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "@types/node": "^20.4.2",
     "@types/shelljs": "^0.8.15",
+    "kafkajs": "^2.2.4",
     "standard-version": "^9.5.0",
     "typescript": "^5.0.2"
   },
