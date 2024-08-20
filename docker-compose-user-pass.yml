@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+  zookeeper:
+    image: bitnami/zookeeper:3.7.0
+    container_name: zookeeper
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - "2181:2181"
+    networks:
+      - kafkanet
+    volumes:
+      - zookeeper_data:/bitnami/zookeeper
+
+  kafka-0:
+    image: bitnami/kafka:2.8.1
+    container_name: kafka-0
+    depends_on:
+      - zookeeper
+    env_file:
+      - .env
+    networks:
+      - kafkanet
+    ports:
+      - "29092:29092" # External access via SASL_PLAINTEXT
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_BROKER_ID=0
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,SASL_PLAINTEXT:SASL_PLAINTEXT
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://kafka-0:9092,SASL_PLAINTEXT://kafka-0:29092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-0:9092,SASL_PLAINTEXT://kafka-0:29092
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN
+      - KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN
+      - KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username="${KAFKA_USERNAME}" password="${KAFKA_PASSWORD}";
+      - KAFKA_OPTS=-Djava.security.auth.login.config=/opt/bitnami/kafka/config/kafka_jaas.conf
+      - KAFKA_CFG_ZOOKEEPER_SASL_ENABLED=false  # Desabilita SASL para ZooKeeper
+      - KAFKA_CFG_SECURITY_PROTOCOL=SASL_PLAINTEXT
+      - ALLOW_PLAINTEXT_LISTENER=yes  # Allows plaintext communication
+    volumes:
+      - ./certs/kafka_server_jaas.conf:/opt/bitnami/kafka/config/kafka_jaas.conf
+      - kafka_data_0:/bitnami/kafka
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: kafka-ui
+    depends_on:
+      - kafka-0
+    networks:
+      - kafkanet
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=kafka-cluster-0
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-0:29092
+      - KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL=SASL_PLAINTEXT
+      - KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM=PLAIN
+      - KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username="${KAFKA_USERNAME}" password="${KAFKA_PASSWORD}";
+    volumes:
+      - kafka_data_0:/opt/kafka-ui/certs
+
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data_0:
+    driver: local
+
+networks:
+  kafkanet:
+    name: kafka-network

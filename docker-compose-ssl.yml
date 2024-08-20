@@ -42,7 +42,16 @@ services:
       - KAFKA_CFG_SECURITY_PROTOCOL=SSL
       - ALLOW_PLAINTEXT_LISTENER=yes  # This allows plaintext communication
     volumes:
-      - ./certs:/bitnami/kafka/config/certs
+      - ./certs/ca-cert.pem:/opt/bitnami/kafka/config/certs/ca-cert.pem
+      - ./certs/ca-cert.srl:/opt/bitnami/kafka/config/certs/ca-cert.srl
+      - ./certs/ca-key.srl:/opt/bitnami/kafka/config/certs/ca-key.pem
+      - ./certs/client.crt.pem:/opt/bitnami/kafka/config/certs/client.crt.pem
+      - ./certs/client.csr.pem:/opt/bitnami/kafka/config/certs/client.csr.pem
+      - ./certs/client.properties:/opt/bitnami/kafka/config/certs/client.properties
+      - ./certs/kafka-0.crt.pem:/opt/bitnami/kafka/config/certs/kafka-0.crt.pem
+      - ./certs/kafka-0.csr.pem:/opt/bitnami/kafka/config/certs/kafka-0.csr.pem
+      - ./certs/kafka-0.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks
+      - ./certs/kafka-0.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks
       - kafka_data_0:/bitnami/kafka
 
   kafka-ui:
