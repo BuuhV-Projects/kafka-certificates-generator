@@ -10,8 +10,17 @@ The **Kafka Certificates Generator** is a simple and efficient tool for generati
    - **`.env` file**: The `.env` file must be located in the folder where you want to generate the certificates. This file must contain the following environment variables:
 
    ```env
-   KAFKA_USERNAME=your_kafka_username
-   KAFKA_PASSWORD=your_kafka_password
+   # 90 days
+   KAFKA_CFG_LOG_RETENTION_MS=7776000000
+   # 2MB
+   KAFKA_CFG_MAX_REQUEST_SIZE=2097152
+   # 2MB
+   KAFKA_CFG_MESSAGE_MAX_BYTES=2097152
+   KAFKA_HOST=localhost
+   KAFKA_PASSWORD=1234567890
+   KAFKA_UI_PASSWORD=1234567890
+   KAFKA_UI_USERNAME=kafka-ui-test
+   KAFKA_USERNAME=kafka_test
    ```
 
 ## How to Use
@@ -29,8 +38,17 @@ The **Kafka Certificates Generator** is a simple and efficient tool for generati
    Create a `.env` file in the folder where you want to generate the certificates and add the following environment variables:
 
    ```env
-   KAFKA_USERNAME=your_kafka_username
-   KAFKA_PASSWORD=your_kafka_password
+   # 90 days
+   KAFKA_CFG_LOG_RETENTION_MS=7776000000
+   # 2MB
+   KAFKA_CFG_MAX_REQUEST_SIZE=2097152
+   # 2MB
+   KAFKA_CFG_MESSAGE_MAX_BYTES=2097152
+   KAFKA_HOST=localhost
+   KAFKA_PASSWORD=1234567890
+   KAFKA_UI_PASSWORD=1234567890
+   KAFKA_UI_USERNAME=kafka-ui-test
+   KAFKA_USERNAME=kafka_test
    ```
 3. **Generate the Certificates**:
 
@@ -52,6 +70,8 @@ The **Kafka Certificates Generator** is a simple and efficient tool for generati
    ```
 
 5. **Examples**
+   Use .env.example file to create your .env file
+
  If you would like to see an example of how to use the Kafka Certificates Generator, check out the docker-compose-ssl.yml file
 
  Execute kafka.ssl.example.ts to see a example of integration with kafka
