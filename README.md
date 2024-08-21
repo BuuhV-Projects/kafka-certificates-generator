@@ -6,7 +6,7 @@ The **Kafka Certificates Generator** is a simple and efficient tool for generati
 
    Before using the **Kafka Certificates Generator**, make sure you have the following requirements installed on your machine:
 
-   - **Java Keytool**: Required to generate certificates. Keytool is usually included in the JDK (Java Development Kit) installation.
+   - **Java Keytool**: Required to generate certificates. Keytool is usually included in the JDK 18.9 (Java Development Kit) installation.
    - **`.env` file**: The `.env` file must be located in the folder where you want to generate the certificates. This file must contain the following environment variables:
 
    ```env
