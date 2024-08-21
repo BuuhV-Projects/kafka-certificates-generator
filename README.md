@@ -72,6 +72,6 @@ The **Kafka Certificates Generator** is a simple and efficient tool for generati
 5. **Examples**
    Use .env.example file to create your .env file
 
- If you would like to see an example of how to use the Kafka Certificates Generator, check out the docker-compose-ssl.yml file
+   If you would like to see an example of how to use the Kafka Certificates Generator, check out the **docker-compose-ssl.yml** file
 
- Execute kafka.ssl.example.ts to see a example of integration with kafka
+   Execute **kafka.ssl.example.ts** to see a example of integration with kafka using SSL
