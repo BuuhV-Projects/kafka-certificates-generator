@@ -30,6 +30,8 @@ class KafkaCertificateManager {
 
             for (const host of this.hosts) {
                 const serverKeystorePath = this.buildPath('certs', `${host}.keystore.jks`);
+                const serverP12Path = this.buildPath('certs', `${host}.keystore.p12`);
+                const serverKeyPath = this.buildPath('certs', `${host}.key.pem`);
                 const serverCsrPath = this.buildPath('certs', `${host}.csr.pem`);
                 const serverCertPath = this.buildPath('certs', `${host}.crt.pem`);
                 const serverTruststorePath = this.buildPath('certs', `${host}.truststore.jks`);
@@ -49,35 +51,49 @@ class KafkaCertificateManager {
                 // 6. Import the CA certificate and the signed server certificate into the server keystore
                 await FileUtils.execAsync(`keytool -keystore ${serverKeystorePath} -alias CARoot -import -file ${caCertPath} -storepass ${this.password} -noprompt`);
                 await FileUtils.execAsync(`keytool -keystore ${serverKeystorePath} -alias kafka-server -import -file ${serverCertPath} -storepass ${this.password} -noprompt`);
+
+                // 7. Convert the JKS to PKCS12 format
+                await FileUtils.execAsync(`keytool -importkeystore -srckeystore ${serverKeystorePath} -destkeystore ${serverP12Path} -deststoretype PKCS12 -srcalias kafka-server -deststorepass ${this.password} -srcstorepass ${this.password}`);
+
+                // 8. Extract the private key from the PKCS12 file
+                await FileUtils.execAsync(`openssl pkcs12 -in ${serverP12Path} -nocerts -nodes -out ${serverKeyPath} -passin pass:${this.password}`);
             }
 
             const clientKeystorePath = this.buildPath('certs', 'kafka.client.keystore.jks');
+            const clientP12Path = this.buildPath('certs', 'kafka.client.keystore.p12');
+            const clientKeyPath = this.buildPath('certs', 'client.key.pem');
             const clientCsrPath = this.buildPath('certs', 'client.csr.pem');
             const clientCertPath = this.buildPath('certs', 'client.crt.pem');
             const clientTruststorePath = this.buildPath('certs', 'kafka.client.truststore.jks');
             const clientPropertiesPath = this.buildPath('certs', 'client.properties');
 
-            // 7. Create a new Java KeyStore (JKS) for the client
+            // 9. Create a new Java KeyStore (JKS) for the client
             await FileUtils.execAsync(`keytool -keystore ${clientKeystorePath} -alias kafka-client -validity ${this.validityInDays} -genkey -keyalg RSA -storepass ${this.password} -keypass ${this.password} -dname "CN=kafka-client"`);
 
-            // 8. Generate a CSR from the client keystore
+            // 10. Generate a CSR from the client keystore
             await FileUtils.execAsync(`keytool -keystore ${clientKeystorePath} -alias kafka-client -certreq -file ${clientCsrPath} -storepass ${this.password} -keypass ${this.password}`);
 
-            // 9. Sign the CSR with the CA to produce a client certificate
+            // 11. Sign the CSR with the CA to produce a client certificate
             await FileUtils.execAsync(`openssl x509 -req -CA ${caCertPath} -CAkey ${caKeyPath} -in ${clientCsrPath} -out ${clientCertPath} -days ${this.validityInDays} -CAcreateserial -passin pass:${this.password}`);
 
-            // 10. Import the CA certificate into the client truststore
+            // 12. Import the CA certificate into the client truststore
             await FileUtils.execAsync(`keytool -keystore ${clientTruststorePath} -alias CARoot -import -file ${caCertPath} -storepass ${this.password} -noprompt`);
 
-            // 11. Import the CA certificate and the signed client certificate into the client keystore
+            // 13. Import the CA certificate and the signed client certificate into the client keystore
             await FileUtils.execAsync(`keytool -keystore ${clientKeystorePath} -alias CARoot -import -file ${caCertPath} -storepass ${this.password} -noprompt`);
             await FileUtils.execAsync(`keytool -keystore ${clientKeystorePath} -alias kafka-client -import -file ${clientCertPath} -storepass ${this.password} -noprompt`);
 
-            // 12. Generate client.properties file
+            // 14. Convert the client JKS to PKCS12 format
+            await FileUtils.execAsync(`keytool -importkeystore -srckeystore ${clientKeystorePath} -destkeystore ${clientP12Path} -deststoretype PKCS12 -srcalias kafka-client -deststorepass ${this.password} -srcstorepass ${this.password}`);
+
+            // 15. Extract the client private key from the PKCS12 file
+            await FileUtils.execAsync(`openssl pkcs12 -in ${clientP12Path} -nocerts -nodes -out ${clientKeyPath} -passin pass:${this.password}`);
+
+            // 16. Generate client.properties file
             this.generateClientProperties(clientKeystorePath, clientTruststorePath, clientPropertiesPath);
             this.generateKafkaJaasConfig();
 
-            console.log('Certificates generated successfully');
+            console.log('Certificates and keys generated successfully');
         } catch (error) {
             console.error('Error generating certificates', error);
             process.exit(1);

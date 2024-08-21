@@ -17,7 +17,7 @@
     "changelog:minor": "npm run changelog -- --release-as minor --prerelease rc",
     "changelog:major": "npm run changelog -- --release-as major --prerelease rc",
     "prepublish": "yarn build",
-    "test": "node dist/kafka.example.js"
+    "test:ssl": "node dist/kafka.ssl.example.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
