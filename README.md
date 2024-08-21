@@ -62,11 +62,11 @@ The **Kafka Certificates Generator** is a simple and efficient tool for generati
    To test the generated certificates, use keytool to view the contents of the `.jks` file:
 
    ```bash
-   keytool -list -v -keystore keystore/kafka.server.keystore.jks
+   keytool -list -v -keystore certs/kafka.client.keystore.jks
    ```
 
    ```bash
-   keytool -list -v -keystore truststore/kafka.truststore.jks
+   keytool -list -v -keystore certs/kafka.client.truststore.jks
    ```
 
 5. **Examples**
