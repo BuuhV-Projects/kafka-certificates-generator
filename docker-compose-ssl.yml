@@ -23,7 +23,7 @@ services:
     networks:
       - kafkanet
     ports:
-      - "29092:29092" # External access via SSL
+      - "29092:29092"
     environment:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_CFG_BROKER_ID=0
@@ -40,12 +40,17 @@ services:
       - KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN
       - KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username="${KAFKA_USERNAME}" password="${KAFKA_PASSWORD}";
       - KAFKA_CFG_SECURITY_PROTOCOL=SSL
-      - ALLOW_PLAINTEXT_LISTENER=yes  # This allows plaintext communication
-      #KAFKA_CFG_LOG_RETENTION_MS
+      - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
       - KAFKA_CFG_LOG_RETENTION_MS=${KAFKA_CFG_LOG_RETENTION_MS}
       - KAFKA_CFG_MAX_REQUEST_SIZE=${KAFKA_CFG_MAX_REQUEST_SIZE}
       - KAFKA_CFG_MESSAGE_MAX_BYTES=${KAFKA_CFG_MESSAGE_MAX_BYTES}
+      - KAFKA_CFG_MIN_INSYNC_REPLICAS=2
+      - KAFKA_CFG_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
 
     volumes:
       - ./certs/ca-cert.pem:/opt/bitnami/kafka/config/certs/ca-cert.pem
@@ -70,7 +75,7 @@ services:
     networks:
       - kafkanet
     ports:
-      - "29093:29093" # External access via SSL
+      - "29093:29093"
     environment:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_CFG_BROKER_ID=1
@@ -87,12 +92,17 @@ services:
       - KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN
       - KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username="${KAFKA_USERNAME}" password="${KAFKA_PASSWORD}";
       - KAFKA_CFG_SECURITY_PROTOCOL=SSL
-      - ALLOW_PLAINTEXT_LISTENER=yes  # This allows plaintext communication
-      #KAFKA_CFG_LOG_RETENTION_MS
+      - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
       - KAFKA_CFG_LOG_RETENTION_MS=${KAFKA_CFG_LOG_RETENTION_MS}
       - KAFKA_CFG_MAX_REQUEST_SIZE=${KAFKA_CFG_MAX_REQUEST_SIZE}
       - KAFKA_CFG_MESSAGE_MAX_BYTES=${KAFKA_CFG_MESSAGE_MAX_BYTES}
+      - KAFKA_CFG_MIN_INSYNC_REPLICAS=2
+      - KAFKA_CFG_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
 
     volumes:
       - ./certs/ca-cert.pem:/opt/bitnami/kafka/config/certs/ca-cert.pem
@@ -107,12 +117,118 @@ services:
       - ./certs/kafka-1.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks
       - kafka_data_1:/bitnami/kafka
 
+  kafka-2:
+    image: bitnami/kafka:2.8.1
+    container_name: kafka-2
+    depends_on:
+      - zookeeper
+    env_file:
+      - .env
+    networks:
+      - kafkanet
+    ports:
+      - "29094:29094"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_BROKER_ID=2
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:SSL,EXTERNAL:SSL
+      - KAFKA_CFG_LISTENERS=INTERNAL://kafka-2:9094,EXTERNAL://0.0.0.0:29094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka-2:9094,EXTERNAL://${KAFKA_HOST}:29094
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
+      - KAFKA_CFG_SSL_KEYSTORE_LOCATION=/opt/bitnami/kafka/config/certs/kafka.keystore.jks
+      - KAFKA_CFG_SSL_KEYSTORE_PASSWORD=${KAFKA_PASSWORD}
+      - KAFKA_CFG_SSL_TRUSTSTORE_LOCATION=/opt/bitnami/kafka/config/certs/kafka.truststore.jks
+      - KAFKA_CFG_SSL_TRUSTSTORE_PASSWORD=${KAFKA_PASSWORD}
+      - KAFKA_CFG_SSL_KEY_PASSWORD=${KAFKA_PASSWORD}
+      - KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN
+      - KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN
+      - KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username="${KAFKA_USERNAME}" password="${KAFKA_PASSWORD}";
+      - KAFKA_CFG_SECURITY_PROTOCOL=SSL
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_CFG_LOG_RETENTION_MS=${KAFKA_CFG_LOG_RETENTION_MS}
+      - KAFKA_CFG_MAX_REQUEST_SIZE=${KAFKA_CFG_MAX_REQUEST_SIZE}
+      - KAFKA_CFG_MESSAGE_MAX_BYTES=${KAFKA_CFG_MESSAGE_MAX_BYTES}
+      - KAFKA_CFG_MIN_INSYNC_REPLICAS=2
+      - KAFKA_CFG_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
+
+    volumes:
+      - ./certs/ca-cert.pem:/opt/bitnami/kafka/config/certs/ca-cert.pem
+      - ./certs/ca-cert.srl:/opt/bitnami/kafka/config/certs/ca-cert.srl
+      - ./certs/ca-key.pem:/opt/bitnami/kafka/config/certs/ca-key.pem
+      - ./certs/client.crt.pem:/opt/bitnami/kafka/config/certs/client.crt.pem
+      - ./certs/client.csr.pem:/opt/bitnami/kafka/config/certs/client.csr.pem
+      - ./certs/client.properties:/opt/bitnami/kafka/config/certs/client.properties
+      - ./certs/kafka-2.crt.pem:/opt/bitnami/kafka/config/certs/kafka-2.crt.pem
+      - ./certs/kafka-2.csr.pem:/opt/bitnami/kafka/config/certs/kafka-2.csr.pem
+      - ./certs/kafka-2.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks
+      - ./certs/kafka-2.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks
+      - kafka_data_2:/bitnami/kafka
+
+  kafka-3:
+    image: bitnami/kafka:2.8.1
+    container_name: kafka-3
+    depends_on:
+      - zookeeper
+    env_file:
+      - .env
+    networks:
+      - kafkanet
+    ports:
+      - "29095:29095"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_BROKER_ID=3
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:SSL,EXTERNAL:SSL
+      - KAFKA_CFG_LISTENERS=INTERNAL://kafka-3:9095,EXTERNAL://0.0.0.0:29095
+      - KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka-3:9095,EXTERNAL://${KAFKA_HOST}:29095
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
+      - KAFKA_CFG_SSL_KEYSTORE_LOCATION=/opt/bitnami/kafka/config/certs/kafka.keystore.jks
+      - KAFKA_CFG_SSL_KEYSTORE_PASSWORD=${KAFKA_PASSWORD}
+      - KAFKA_CFG_SSL_TRUSTSTORE_LOCATION=/opt/bitnami/kafka/config/certs/kafka.truststore.jks
+      - KAFKA_CFG_SSL_TRUSTSTORE_PASSWORD=${KAFKA_PASSWORD}
+      - KAFKA_CFG_SSL_KEY_PASSWORD=${KAFKA_PASSWORD}
+      - KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN
+      - KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN
+      - KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username="${KAFKA_USERNAME}" password="${KAFKA_PASSWORD}";
+      - KAFKA_CFG_SECURITY_PROTOCOL=SSL
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_CFG_LOG_RETENTION_MS=${KAFKA_CFG_LOG_RETENTION_MS}
+      - KAFKA_CFG_MAX_REQUEST_SIZE=${KAFKA_CFG_MAX_REQUEST_SIZE}
+      - KAFKA_CFG_MESSAGE_MAX_BYTES=${KAFKA_CFG_MESSAGE_MAX_BYTES}
+      - KAFKA_CFG_MIN_INSYNC_REPLICAS=2
+      - KAFKA_CFG_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
+
+    volumes:
+      - ./certs/ca-cert.pem:/opt/bitnami/kafka/config/certs/ca-cert.pem
+      - ./certs/ca-cert.srl:/opt/bitnami/kafka/config/certs/ca-cert.srl
+      - ./certs/ca-key.pem:/opt/bitnami/kafka/config/certs/ca-key.pem
+      - ./certs/client.crt.pem:/opt/bitnami/kafka/config/certs/client.crt.pem
+      - ./certs/client.csr.pem:/opt/bitnami/kafka/config/certs/client.csr.pem
+      - ./certs/client.properties:/opt/bitnami/kafka/config/certs/client.properties
+      - ./certs/kafka-3.crt.pem:/opt/bitnami/kafka/config/certs/kafka-3.crt.pem
+      - ./certs/kafka-3.csr.pem:/opt/bitnami/kafka/config/certs/kafka-3.csr.pem
+      - ./certs/kafka-3.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks
+      - ./certs/kafka-3.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks
+      - kafka_data_3:/bitnami/kafka
+
   kafka-ui:
     image: provectuslabs/kafka-ui:v0.7.2
     container_name: kafka-ui
     depends_on:
       - kafka-0
       - kafka-1
+      - kafka-2
+      - kafka-3
     networks:
       - kafkanet
     ports:
@@ -121,7 +237,7 @@ services:
       - .env
     environment:
       - KAFKA_CLUSTERS_0_NAME=kafka-cluster-0
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-0:9092,kafka-1:9093
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-0:9092,kafka-1:9093,kafka-2:9094,kafka-3:9095
       - KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL=SSL
       - KAFKA_CLUSTERS_0_PROPERTIES_SSL_KEYSTORE_LOCATION=/opt/kafka-ui/certs/kafka.client.keystore.jks
       - KAFKA_CLUSTERS_0_PROPERTIES_SSL_KEYSTORE_PASSWORD=${KAFKA_PASSWORD}
@@ -138,6 +254,10 @@ volumes:
   kafka_data_0:
     driver: local
   kafka_data_1:
+    driver: local
+  kafka_data_2:
+    driver: local
+  kafka_data_3:
     driver: local
 
 networks:

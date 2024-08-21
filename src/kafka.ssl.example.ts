@@ -1,11 +1,11 @@
-import { Kafka } from 'kafkajs';
+import { Kafka, Partitioners } from 'kafkajs';
 import fs from 'fs';
 import path from 'path';
 
 // Carregando os certificados e as chaves necessárias
 const kafka = new Kafka({
     clientId: 'my-app',
-    brokers: ['localhost:29092', 'localhost:29093'],  // Endereço e porta do broker conforme configurado no docker-compose
+    brokers: ['localhost:29092', 'localhost:29093', 'localhost:29094', 'localhost:29095'],  // Endereço e porta do broker conforme configurado no docker-compose
     ssl: {
         rejectUnauthorized: false,  // Não recomendado em produção, pois desativa a verificação do hostname
         ca: [fs.readFileSync(path.resolve(process.cwd(), 'certs/ca-cert.pem'), 'utf-8')], // Certificado da CA
@@ -14,7 +14,7 @@ const kafka = new Kafka({
     },
 });
 
-const producer = kafka.producer();
+const producer = kafka.producer(({ createPartitioner: Partitioners.DefaultPartitioner }));
 const consumer = kafka.consumer({ groupId: 'test-group' });
 
 const run = async () => {
@@ -25,7 +25,8 @@ const run = async () => {
 
     // Criando um tópico
     await admin.createTopics({
-        topics: [{ topic: 'test-topic', numPartitions: 5, replicationFactor: 2 }],
+        topics: [{ topic: 'test-topic', numPartitions: 5, replicationFactor: 3, }],
+        waitForLeaders: true,
     });
 
     // Conectando o Producer
