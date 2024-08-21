@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/BuuhV-Projects/kafka-certificates-generator/compare/v1.2.0...v1.3.0) (2024-08-21)
+
+
+### Features
+
+* Cluster ([cee49b6](https://github.com/BuuhV-Projects/kafka-certificates-generator/commit/cee49b646598d2826674bc8fd1bfc76dfbebff73))
+* Cluster ssl ([cb993d8](https://github.com/BuuhV-Projects/kafka-certificates-generator/commit/cb993d84265f27a1df024f413341bf8ddf58e82d))
+* Conectando no kafka via SSL TLS ([c8c23fe](https://github.com/BuuhV-Projects/kafka-certificates-generator/commit/c8c23fee19a56d43cebea47671cef500d6faad14))
+* Gerando certificado do cliente ([dc8942e](https://github.com/BuuhV-Projects/kafka-certificates-generator/commit/dc8942ed394121b35b1df7971edbc1cbe6ae172c))
+* gerando certificados ([0f30686](https://github.com/BuuhV-Projects/kafka-certificates-generator/commit/0f30686802fe3658202eb51bc4280ba8fb508063))
+* Habilitando auth no zookeeper ([4285537](https://github.com/BuuhV-Projects/kafka-certificates-generator/commit/428553750247374b90c34b690df732dd2d9524f0))
+* readme ([07c5397](https://github.com/BuuhV-Projects/kafka-certificates-generator/commit/07c5397e9d92b66033b0edc4a3c362d80b693ac9))
+* Se conectando ao kafka na mesma rede ([6015af8](https://github.com/BuuhV-Projects/kafka-certificates-generator/commit/6015af8f54c6ea3b8eb9db87e79dcd76cf321281))
+
+
+### Bug Fixes
+
+* cname ([46b0aa1](https://github.com/BuuhV-Projects/kafka-certificates-generator/commit/46b0aa15f9af3ba402da9ea520ac6ea82e40f626))
+
 ## [1.2.0](https://github.com/BuuhV-Projects/kafka-certificates-generator/compare/v1.1.6...v1.2.0) (2024-08-20)
 
 
