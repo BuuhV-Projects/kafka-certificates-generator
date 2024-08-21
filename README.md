@@ -50,3 +50,6 @@ The **Kafka Certificates Generator** is a simple and efficient tool for generati
    ```bash
    keytool -list -v -keystore truststore/kafka.truststore.jks
    ```
+
+5. **Examples**
+ If you would like to see an example of how to use the Kafka Certificates Generator, check out the docker-compose-ssl.yml file

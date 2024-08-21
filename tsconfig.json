@@ -8,6 +8,5 @@
         "esModuleInterop": true
     },
     "include": [
-        "src/**/*"
-    ]
+        "src/**/*", "kafka.ssl.example.ts"    ]
 }
