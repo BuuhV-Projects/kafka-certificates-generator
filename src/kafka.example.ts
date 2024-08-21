@@ -1,13 +1,15 @@
+require('dotenv').config();
 import * as kafkajs from 'kafkajs';
 
 const kafka = new kafkajs.Kafka({
     clientId: 'my-app',
-    brokers: ['localhost:29092'],
+    brokers: ['179.222.233.122:9092'],
     sasl: {
-        username: 'c3RlcmxpbmctY29yZ2ktODM0MSQ0Je0',
-        password: 'ZDhjZDliYTctZTI1OS00MDc3LThhYTAtZTlkOWRkZTNlZGNk',
-        mechanism: 'plain'
-    },
+        username: process.env.KAFKA_USERNAME,
+        password: process.env.KAFKA_PASSWORD,
+        mechanism: 'plain',
+        rejectUnauthorized: true,
+    } as any,
     ssl: false,
 });
 

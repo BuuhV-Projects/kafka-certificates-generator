@@ -27,10 +27,9 @@ services:
     env_file:
       - .env
     networks:
-      - kafkanet  # Para comunicação interna
-      - externalnet  # Para comunicação externa (internet)
+      - kafkanet
     ports:
-      - "29092:29092" # External access via SASL_PLAINTEXT
+      - "9092:9092" # External access via SASL_PLAINTEXT
     environment:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_CFG_BROKER_ID=0
@@ -39,10 +38,10 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:SASL_PLAINTEXT,EXTERNAL:SASL_PLAINTEXT
       
       # Define os listeners internos e externos
-      - KAFKA_CFG_LISTENERS=INTERNAL://kafka-0:9093,EXTERNAL://0.0.0.0:29092
+      - KAFKA_CFG_LISTENERS=INTERNAL://kafka-0:29092,EXTERNAL://0.0.0.0:9092
       
       # Define os listeners que serão anunciados externamente
-      - KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka-0:9093,EXTERNAL://${KAFKA_HOST}:29092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka-0:29092,EXTERNAL://${KAFKA_HOST}:9092
       
       # Define o listener que será usado para comunicação entre brokers
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
@@ -99,8 +98,3 @@ volumes:
 networks:
   kafkanet:
     name: kafka-network
-    driver: bridge  # Rede interna para comunicação entre Kafka, Zookeeper, e Kafka-UI
-
-  externalnet:
-    name: kafka-external-network
-    driver: bridge  # Rede externa criada pelo Docker Compose
