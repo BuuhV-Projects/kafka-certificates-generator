@@ -28,13 +28,15 @@ class KafkaCertificateManager {
             // 1. Generate CA key and certificate
             await FileUtils.execAsync(`openssl req -new -x509 -keyout ${caKeyPath} -out ${caCertPath} -days ${this.validityInDays} -passout pass:${this.password} -subj "/CN=Kafka-CA"`);
 
+            let hostKey = 0;
+
             for (const host of this.hosts) {
-                const serverKeystorePath = this.buildPath('certs', `${host}.keystore.jks`);
-                const serverP12Path = this.buildPath('certs', `${host}.keystore.p12`);
-                const serverKeyPath = this.buildPath('certs', `${host}.key.pem`);
-                const serverCsrPath = this.buildPath('certs', `${host}.csr.pem`);
-                const serverCertPath = this.buildPath('certs', `${host}.crt.pem`);
-                const serverTruststorePath = this.buildPath('certs', `${host}.truststore.jks`);
+                const serverKeystorePath = this.buildPath('certs', `${hostKey}.keystore.jks`);
+                const serverP12Path = this.buildPath('certs', `${hostKey}.keystore.p12`);
+                const serverKeyPath = this.buildPath('certs', `${hostKey}.key.pem`);
+                const serverCsrPath = this.buildPath('certs', `${hostKey}.csr.pem`);
+                const serverCertPath = this.buildPath('certs', `${hostKey}.crt.pem`);
+                const serverTruststorePath = this.buildPath('certs', `${hostKey}.truststore.jks`);
 
                 // 2. Create a new Java KeyStore (JKS) for Kafka broker (with CN=host)
                 await FileUtils.execAsync(`keytool -keystore ${serverKeystorePath} -alias kafka-server -validity ${this.validityInDays} -genkey -keyalg RSA -storepass ${this.password} -keypass ${this.password} -dname "CN=${host}"`);
@@ -57,6 +59,7 @@ class KafkaCertificateManager {
 
                 // 8. Extract the private key from the PKCS12 file
                 await FileUtils.execAsync(`openssl pkcs12 -in ${serverP12Path} -nocerts -nodes -out ${serverKeyPath} -passin pass:${this.password}`);
+                hostKey++;
             }
 
             const clientKeystorePath = this.buildPath('certs', 'kafka.client.keystore.jks');
