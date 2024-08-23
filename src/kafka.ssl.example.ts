@@ -1,11 +1,12 @@
 import { Kafka, Partitioners } from 'kafkajs';
 import fs from 'fs';
 import path from 'path';
+const brokers = process.env.HOSTS.split(',').map((host, key) => `${host}:2909${key+2}`);
 
 // Carregando os certificados e as chaves necessárias
 const kafka = new Kafka({
     clientId: 'my-app',
-    brokers: ['localhost:29092', 'localhost:29093', 'localhost:29094', 'localhost:29095'],  // Endereço e porta do broker conforme configurado no docker-compose
+    brokers: brokers,  // Endereço e porta do broker conforme configurado no docker-compose
     ssl: {
         rejectUnauthorized: false,  // Não recomendado em produção, pois desativa a verificação do hostname
         ca: [fs.readFileSync(path.resolve(process.cwd(), 'certs/ca-cert.pem'), 'utf-8')], // Certificado da CA
@@ -25,7 +26,7 @@ const run = async () => {
 
     // Criando um tópico
     await admin.createTopics({
-        topics: [{ topic: 'test-topic', numPartitions: 5, replicationFactor: 3, }],
+        topics: [{ topic: 'test-topic', numPartitions: 5, replicationFactor: 2, }],
         waitForLeaders: true,
     });
 
