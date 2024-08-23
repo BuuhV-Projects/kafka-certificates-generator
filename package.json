@@ -1,6 +1,6 @@
 {
   "name": "kafka-certificates-generator",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Gerador de certificados do kafka. Usado para configurar auth.",
   "main": "dist/index.js",
   "bin": "dist/index.js",
