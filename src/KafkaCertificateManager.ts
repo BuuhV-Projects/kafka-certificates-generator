@@ -31,12 +31,12 @@ class KafkaCertificateManager {
             let hostKey = 0;
 
             for (const host of this.hosts) {
-                const serverKeystorePath = this.buildPath('certs', `${hostKey}.keystore.jks`);
-                const serverP12Path = this.buildPath('certs', `${hostKey}.keystore.p12`);
-                const serverKeyPath = this.buildPath('certs', `${hostKey}.key.pem`);
-                const serverCsrPath = this.buildPath('certs', `${hostKey}.csr.pem`);
-                const serverCertPath = this.buildPath('certs', `${hostKey}.crt.pem`);
-                const serverTruststorePath = this.buildPath('certs', `${hostKey}.truststore.jks`);
+                const serverKeystorePath = this.buildPath('certs', `kafka-${hostKey}.keystore.jks`);
+                const serverP12Path = this.buildPath('certs', `kafka-${hostKey}.keystore.p12`);
+                const serverKeyPath = this.buildPath('certs', `kafka-${hostKey}.key.pem`);
+                const serverCsrPath = this.buildPath('certs', `kafka-${hostKey}.csr.pem`);
+                const serverCertPath = this.buildPath('certs', `kafka-${hostKey}.crt.pem`);
+                const serverTruststorePath = this.buildPath('certs', `kafka-${hostKey}.truststore.jks`);
 
                 // 2. Create a new Java KeyStore (JKS) for Kafka broker (with CN=host)
                 await FileUtils.execAsync(`keytool -keystore ${serverKeystorePath} -alias kafka-server -validity ${this.validityInDays} -genkey -keyalg RSA -storepass ${this.password} -keypass ${this.password} -dname "CN=${host}"`);
