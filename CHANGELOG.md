@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/BuuhV-Projects/kafka-certificates-generator/compare/v1.3.4...v1.4.0) (2024-08-23)
+
+
+### Features
+
+* Lista de hosts a partir de variável ([8d1126d](https://github.com/BuuhV-Projects/kafka-certificates-generator/commit/8d1126d7264c4144d18da5f0218fc45165fc5011))
+
 ### [1.3.4](https://github.com/BuuhV-Projects/kafka-certificates-generator/compare/v1.3.3...v1.3.4) (2024-08-21)
 
 
