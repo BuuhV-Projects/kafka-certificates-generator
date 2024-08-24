@@ -1,3 +1,4 @@
+require('dotenv').config();
 import { Kafka, Partitioners } from 'kafkajs';
 import fs from 'fs';
 import path from 'path';
