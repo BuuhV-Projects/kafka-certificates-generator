@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/BuuhV-Projects/kafka-certificates-generator/compare/v1.4.2...v1.5.0) (2024-08-25)
+
+
+### Features
+
+* Suporte ao Schema Registry ([01f0d54](https://github.com/BuuhV-Projects/kafka-certificates-generator/commit/01f0d543d21b64a3870762db1326adb150aaa1c7))
+
 ### [1.4.2](https://github.com/BuuhV-Projects/kafka-certificates-generator/compare/v1.4.1...v1.4.2) (2024-08-23)
 
 ### [1.4.1](https://github.com/BuuhV-Projects/kafka-certificates-generator/compare/v1.4.0...v1.4.1) (2024-08-23)
