@@ -20,7 +20,7 @@ services:
       - zookeeper_data:/bitnami/zookeeper
 
   schema-registry:
-    image: confluentinc/cp-schema-registry
+    image: confluentinc/cp-schema-registry:7.7.0
     container_name: schema-registry
     ports:
       - "8081:8081"
