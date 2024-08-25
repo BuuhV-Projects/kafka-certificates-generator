@@ -20,6 +20,7 @@
     "test:ssl": "ts-node-dev ./src/kafka.ssl.example.ts"
   },
   "dependencies": {
+    "@kafkajs/confluent-schema-registry": "^3.3.0",
     "dotenv": "^16.4.5",
     "shelljs": "^0.8.5"
   },
