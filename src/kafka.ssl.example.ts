@@ -21,7 +21,7 @@ const kafka = new Kafka({
 const producer = kafka.producer({ createPartitioner: Partitioners.DefaultPartitioner });
 const consumer = kafka.consumer({ groupId: 'test-group' });
 
-const registry = new SchemaRegistry({ host: 'http://localhost:8081', auth: {
+const registry = new SchemaRegistry({ host: `http://${process.env.SCHEMA_REGISTRY_HOST_NAME}:8081`, auth: {
     password: process.env.KAFKA_PASSWORD,
     username: process.env.KAFKA_USERNAME,
 },  });

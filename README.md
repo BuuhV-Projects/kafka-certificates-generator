@@ -77,3 +77,16 @@ The **Kafka Certificates Generator** is a simple and efficient tool for generati
    Execute **kafka.ssl.example.ts** to see a example of integration with kafka using SSL
 
    Remember to create schema in your kafka cluster before execute the example
+   ```avro
+   {
+      "type": "record",
+      "name": "MessageRecord",
+      "namespace": "com.example",
+      "fields": [
+         {
+            "name": "message",
+            "type": "string"
+         }
+      ]
+   }
+   ```
